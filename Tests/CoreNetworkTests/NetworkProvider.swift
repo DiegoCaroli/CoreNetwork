@@ -69,4 +69,15 @@ class NetworkProvider {
         }
     }
 
+    func fetchIndra(bodyTerm: String, urlTerm: String, completion: @escaping (Result<Response, Error>) -> Void) {
+        router.request(.indra(bodyTerm, urlTerm)) { result in
+            do {
+                let response = try result.get()
+                completion(.success(response))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
 }

@@ -13,6 +13,7 @@ enum TestAPI {
     case dakini(String)
     case dharma(String)
     case gong(User)
+    case indra(String, String)
 }
 
 extension TestAPI: EndPointType {
@@ -33,6 +34,8 @@ extension TestAPI: EndPointType {
                 return "/dharma"
             case .gong:
                 return "/gong"
+            case .indra:
+                return "/indra"
         }
     }
 
@@ -40,7 +43,8 @@ extension TestAPI: EndPointType {
         switch self {
             case .asana,
                  .dakini,
-                 .dharma:
+                 .dharma,
+                 .indra:
                 return .get
             case .gong:
                 return .post
@@ -56,6 +60,9 @@ extension TestAPI: EndPointType {
                 return .requestParameters(urlParameters: ["term": term])
             case .gong(let user):
                 return .requestJSONEncodable(user)
+            case .indra(let bodyTerm, let urlTerm):
+                return .requestCompositeParameters(bodyParameters: ["bodyTerm": bodyTerm],
+                                                   urlParameters: ["urlTerm": urlTerm])
         }
     }
 

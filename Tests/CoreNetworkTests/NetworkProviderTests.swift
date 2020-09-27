@@ -97,6 +97,22 @@ class NetworkProviderTests: XCTestCase {
         sut.requestGong(user: user) { _ in }
         XCTAssertNotNil(mockURLSession.httpBody)
     }
+
+    func testIndraHTTPBodyAndURLParameters() {
+        let urlResponse = HTTPURLResponse(url: mockURL,
+                                          statusCode: 200,
+                                          httpVersion: nil,
+                                          headerFields: nil)
+        mockURLSession = MockURLSession(data: TestAPI.asana.sampleData,
+                                        urlResponse: urlResponse,
+                                        error: nil)
+        setupSession(mockURLSession)
+
+        sut.fetchIndra(bodyTerm: "term1", urlTerm: "term2") { _ in }
+        XCTAssertNotNil(mockURLSession.httpBody)
+        XCTAssertEqual(mockURLSession.urlComponents?.url?.query,
+                       "urlTerm=term2")
+    }
     
 
     func testAsanaImmediateStubSuccessful() {
@@ -202,6 +218,7 @@ class NetworkProviderTests: XCTestCase {
         ("testDakiniPath", testDakiniPath),
         ("testDharmaURLParameters", testDharmaURLParameters),
         ("testGongHTTPBody", testGongHTTPBody),
+        ("testIndraHTTPBodyAndURLParameters", testIndraHTTPBodyAndURLParameters),
         ("testAsanaSuccessful", testAsanaImmediateStubSuccessful),
         ("testAsanaDelayStubSuccessful", testAsanaDelayStubSuccessful),
         ("testAsanaJSONInvalid", testAsanaJSONInvalid),
