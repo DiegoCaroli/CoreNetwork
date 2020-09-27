@@ -26,7 +26,7 @@ Using **NetworkLayer**  is really simple, you need to declare an **EndPointAPI**
 ~~~swift
 
 import Foundation
-import NetworkLayer
+import CoreNetwork
 
 enum GitHubAPI {
     case users
@@ -82,7 +82,7 @@ You can use different types of task:
 
 ~~~swift
 
-import NetworkLayer
+import CoreNetwork
 
 class NetworkManager {
 
