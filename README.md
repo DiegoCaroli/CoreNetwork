@@ -30,7 +30,7 @@ import NetworkLayer
 
 enum GitHubAPI {
     case users
-    case user(String)
+    case users(String)
 }
 
 extension GitHubAPI: EndPointType {
@@ -61,7 +61,7 @@ extension GitHubAPI: EndPointType {
     }
 
     var sampleData: Data? {
-        return nil
+        return Data()
     }
 
 }
