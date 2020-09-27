@@ -1,0 +1,8 @@
+"MissingURL" = "L'URL è mancante.";
+"NoData" = "Nessun dato ricevuto dal server.";
+"InvalidResponse" = "Risposta del server non valida (formato non previsto).";
+"BadRequest" = "La richiesta è stata rifiutata: 400-499.";
+"ServerError" = "Si è verificato un errore del server.";
+"DecodingError" = "Si è verificato un errore durante la decodifica dei dati.";
+"EncodingError" = "Si è verificato un errore durante la codifica dei dati.";
+"Unknown" = "Errore sconosciuto.";
