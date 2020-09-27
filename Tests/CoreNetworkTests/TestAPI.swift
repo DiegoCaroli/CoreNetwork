@@ -70,8 +70,8 @@ extension TestAPI: EndPointType {
         return ["Content-Type": "application/json"]
     }
 
-    var sampleData: Data? {
-        return "{\"name\":\"max\", \"email\":\"max@gmail.com\"}".data(using: .utf8)
+    var sampleData: Data {
+        return "{\"name\":\"max\", \"email\":\"max@gmail.com\"}".data(using: .utf8)!
     }
 
 }

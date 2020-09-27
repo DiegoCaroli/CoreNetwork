@@ -60,7 +60,7 @@ extension GitHubAPI: EndPointType {
         return ["Content-Type": "application/json"]
     }
 
-    var sampleData: Data? {
+    var sampleData: Data {
         return Data()
     }
 

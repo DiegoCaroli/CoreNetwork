@@ -84,13 +84,13 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
     private func stubRequest(_ route: EndPoint,
                              request: URLRequest,
                              completion: @escaping RequestCompletion) {
-        if let data = route.sampleData, !data.isEmpty {
+        if !route.sampleData.isEmpty {
             if case .delayed(let seconds) = stubBehavior {
                 DispatchQueue.main.asyncAfter(deadline: .now() + seconds) { [self] in
                     do {
                         let response = try buildResponse(route,
                                                          request: request,
-                                                         data: data)
+                                                         data: route.sampleData)
                         
                         completion(.success(response))
                     } catch {
@@ -101,7 +101,7 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
                 do {
                     let response = try self.buildResponse(route,
                                                           request: request,
-                                                          data: data)
+                                                          data: route.sampleData)
                     
                     completion(.success(response))
                 } catch {
