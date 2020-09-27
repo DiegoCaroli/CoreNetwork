@@ -1,6 +1,6 @@
 # CoreNetwork
 
-**CoreNetwork** is network layer build on URLSesssion without using third part libraries simple and easy.
+**CoreNetwork** is network layer build on URLSesssion without using third part libraries simple and easy to use.
 
 ## Installation
 
