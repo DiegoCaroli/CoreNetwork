@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  URLRequest+Encoding.swift
 //  
 //
 //  Created by Diego Caroli on 26/09/2020.
@@ -11,7 +11,7 @@ public extension URLRequest {
     mutating func encoded(encodable: Encodable,
                           encoder: JSONEncoder = JSONEncoder()) throws -> URLRequest {
         do {
-            let encoding = Encoding(encodable: encodable)
+            let encoding = CustomEncodable(encodable: encodable)
             httpBody = try encoder.encode(encoding)
 
             let contentTypeHeaderName = "Content-Type"

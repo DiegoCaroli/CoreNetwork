@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  NetworkLogger.swift
 //  
 //
 //  Created by Diego Caroli on 26/09/2020.

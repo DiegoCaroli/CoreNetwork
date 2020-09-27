@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  String+urlEscaped.swift
 //  
 //
 //  Created by Diego Caroli on 27/09/2020.

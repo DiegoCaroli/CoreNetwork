@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CustomEncodable.swift
 //  
 //
 //  Created by Diego Caroli on 26/09/2020.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Encoding: Encodable {
+public struct CustomEncodable: Encodable {
     private let encodable: Encodable
 
     init(encodable: Encodable) {
