@@ -13,7 +13,6 @@ public enum NetworkError: Error {
     case invalidResponse
     case badRequest(String?)
     case serverError(String?)
-    case parseError(String?)
     case decodingError(String?)
     case encodingError(String?)
     case unknown
@@ -23,23 +22,21 @@ extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .missingURL:
-            return "The URL is missing."
+            return NSLocalizedString("MissingURL", comment: "")
         case .noData:
-            return "No data received from the server."
+            return NSLocalizedString("NoData", comment: "")
         case .invalidResponse:
-            return "The server response was invalid (unexpected format)."
+            return NSLocalizedString("InvalidResponse", comment: "")
         case .badRequest(_):
-            return "The request was rejected: 400-499."
+            return NSLocalizedString("BadRequest", comment: "")
         case .serverError(_):
-            return "Encoutered a server error."
-        case .parseError(_):
-            return "There was an error parsing the data."
+            return NSLocalizedString("ServerError", comment: "")
         case .decodingError(_):
-            return "There was an error decoding the data"
+            return NSLocalizedString("DecodingError", comment: "")
         case .encodingError(_):
-            return "There was an error encoding the data"
+            return NSLocalizedString("EncodingError", comment: "")
         case .unknown:
-            return "Unknown error."
+            return NSLocalizedString("Unknown", comment: "")
         }
     }
 }

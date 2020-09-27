@@ -9,7 +9,7 @@ To add a package dependency to your Xcode project, select File > Swift Packages 
 ~~~swift
 
 dependencies: [
-    .package(url: "https://gitlab.gullit.cloud/ios-playground/networking.git", from: "1.0.0")
+    .package(url: "https://github.com/DiegoCaroli/CoreNetwork.git", from: "1.0.0")
 ]
 
 ~~~
