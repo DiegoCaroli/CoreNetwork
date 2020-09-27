@@ -3,5 +3,6 @@ import XCTest
 import CoreNetworkTests
 
 var tests = [XCTestCaseEntry]()
-tests += CoreNetworkTests.allTests()
+tests += NetworkServiceTests.allTests()
+tests += StringUrlEscapedTests.allTests()
 XCTMain(tests)

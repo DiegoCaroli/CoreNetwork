@@ -14,8 +14,11 @@ public enum HTTPTask {
     case requestPlain
     case requestData(Data)
     case requestJSONEncodable(Encodable)
-    case requestCustomJSONEncodable(Encodable, encoder: JSONEncoder)
+    case requestCustomJSONEncodable(Encodable,
+                                    encoder: JSONEncoder)
     case requestParameters(urlParameters: Parametes)
-    case requestCompositeData(bodyData: Data, urlParameters: Parametes)
-    case requestCompositeParameters(bodyParameters: Parametes, urlParameters: Parametes)
+    case requestCompositeData(bodyData: Data,
+                              urlParameters: Parametes)
+    case requestCompositeParameters(bodyParameters: Parametes,
+                                    urlParameters: Parametes)
 }

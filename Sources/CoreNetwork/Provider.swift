@@ -13,7 +13,8 @@ public typealias RequestCompletion = (Result<Response, Error>) -> Void
 
 public protocol ProviderType: AnyObject {
     associatedtype EndPoint: EndPointType
-    func request(_ route: EndPoint, completion: @escaping (Result<Response, Error>) -> Void)
+    func request(_ route: EndPoint,
+                 completion: @escaping (Result<Response, Error>) -> Void)
     func cancel()
 }
 
@@ -23,7 +24,7 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
     private var task: URLSessionTask?
     private let stubBehavior: StubBehavior
     private let endpointSampleResponse: EndpointSampleResponse?
-
+    
     public init(session: NetworkSessionProtocol,
                 timeoutInterval: TimeInterval = 30.0,
                 stubBehavior: StubBehavior = .never,
@@ -33,11 +34,11 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
         self.stubBehavior = stubBehavior
         self.endpointSampleResponse = endpointSampleResponse
     }
-
+    
     public func request(_ route: EndPoint, completion: @escaping RequestCompletion) {
         do {
             let request = try self.urlRequest(from: route)
-
+            
             if stubBehavior == .never {
                 sendRequest(request, completion: completion)
             } else {
@@ -48,39 +49,49 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
         }
         self.task?.resume()
     }
-
+    
     public func cancel() {
         task?.cancel()
     }
-
+    
     private func sendRequest(_ request: URLRequest, completion: @escaping RequestCompletion) {
-        task = session.dataTask(with: request,
-                                completionHandler: { [weak self] data, urlResponse, error in
-                                    self?.handleResponse(data: data, urlResponse: urlResponse, error: error) { result in
-                                        switch result {
-                                            case .success(let data):
-                                                guard let urlResponse = urlResponse as? HTTPURLResponse else {
-                                                    completion(.failure(NetworkError.invalidResponse))
-                                                    return
-                                                }
-
-                                                let response = Response(request: request, response: urlResponse, data: data, statusCode: urlResponse.statusCode)
-                                                self?.log(response: response)
-                                                completion(.success(response))
-                                            case .failure(let error):
-                                                completion(.failure(error))
-                                        }
-                                    }
-                                })
+        task = session.dataTask(
+            with: request,
+            completionHandler: { [weak self] data, urlResponse, error in
+                self?.handleResponse(data: data,
+                                     urlResponse: urlResponse,
+                                     error: error) { result in
+                    switch result {
+                        case .success(let data):
+                            guard let urlResponse = urlResponse as? HTTPURLResponse else {
+                                completion(.failure(NetworkError.invalidResponse))
+                                return
+                            }
+                            
+                            let response = Response(request: request,
+                                                    response: urlResponse,
+                                                    data: data,
+                                                    statusCode: urlResponse.statusCode)
+                            self?.log(response: response)
+                            completion(.success(response))
+                        case .failure(let error):
+                            completion(.failure(error))
+                    }
+                }
+            })
     }
-
-    private func stubRequest(_ route: EndPoint, request: URLRequest, completion: @escaping RequestCompletion) {
+    
+    private func stubRequest(_ route: EndPoint,
+                             request: URLRequest,
+                             completion: @escaping RequestCompletion) {
         if let data = route.sampleData, !data.isEmpty {
             if case .delayed(let seconds) = stubBehavior {
                 DispatchQueue.main.asyncAfter(deadline: .now() + seconds) { [self] in
                     do {
-                        let response = try buildResponse(route, request: request, data: data)
-
+                        let response = try buildResponse(route,
+                                                         request: request,
+                                                         data: data)
+                        
                         completion(.success(response))
                     } catch {
                         completion(.failure(error))
@@ -88,8 +99,10 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
                 }
             } else {
                 do {
-                    let response = try self.buildResponse(route, request: request, data: data)
-
+                    let response = try self.buildResponse(route,
+                                                          request: request,
+                                                          data: data)
+                    
                     completion(.success(response))
                 } catch {
                     completion(.failure(error))
@@ -99,44 +112,58 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
             completion(.failure(NetworkError.noData))
         }
     }
-
-    private func buildResponse(_ route: EndPoint, request: URLRequest, data: Data) throws -> Response {
+    
+    private func buildResponse(_ route: EndPoint,
+                               request: URLRequest,
+                               data: Data) throws -> Response {
         let response: Response
-
+        
         switch endpointSampleResponse {
             case .networkResponse(let statusCode, let data):
-                let urlResponse = try buildHTTPURLResponse(route, statusCode: statusCode, request: request)
-                response = Response(request: request, response: urlResponse, data: data, statusCode: urlResponse.statusCode)
+                let urlResponse = try buildHTTPURLResponse(route,
+                                                           statusCode: statusCode,
+                                                           request: request)
+                response = Response(request: request,
+                                    response: urlResponse,
+                                    data: data,
+                                    statusCode: urlResponse.statusCode)
             case .none:
-                let urlResponse = try buildHTTPURLResponse(route, statusCode: 200, request: request)
-                response = Response(request: request, response: urlResponse, data: data, statusCode: urlResponse.statusCode)
+                let urlResponse = try buildHTTPURLResponse(route,
+                                                           statusCode: 200,
+                                                           request: request)
+                response = Response(request: request,
+                                    response: urlResponse,
+                                    data: data,
+                                    statusCode: urlResponse.statusCode)
         }
-
+        
         return response
     }
-
-    private func buildHTTPURLResponse(_ route: EndPoint, statusCode: Int, request: URLRequest) throws -> HTTPURLResponse {
+    
+    private func buildHTTPURLResponse(_ route: EndPoint,
+                                      statusCode: Int,
+                                      request: URLRequest) throws -> HTTPURLResponse {
         let urlResponse = HTTPURLResponse(
             url: route.baseURL.appendingPathComponent(route.path),
             statusCode: statusCode,
             httpVersion: nil,
             headerFields: route.headers)
-
+        
         guard let response = urlResponse else {
             throw NetworkError.invalidResponse
         }
-
+        
         return response
     }
-
+    
     private func urlRequest(from route: EndPoint) throws -> URLRequest {
         var request = URLRequest(url: route.baseURL.appendingPathComponent(route.path),
                                  cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
                                  timeoutInterval: timeoutInterval)
-
+        
         request.httpMethod = route.httpMethod.rawValue
         request.allHTTPHeaderFields = route.headers
-
+        
         switch route.task {
             case .requestPlain:
                 return request
@@ -157,7 +184,7 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
                 return try request.encoded(urlParameters: urlParameters)
         }
     }
-
+    
     private func handleResponse(data: Data?,
                                 urlResponse: URLResponse?,
                                 error: Error?,
@@ -166,7 +193,7 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
             completion(.failure(NetworkError.invalidResponse))
             return
         }
-
+        
         verifyStatusCode(data: data, urlResponse: urlResponse, error: error) { result in
             switch result {
                 case .success(let data):
@@ -176,7 +203,7 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
             }
         }
     }
-
+    
     private func verifyStatusCode(data: Data?,
                                   urlResponse: HTTPURLResponse,
                                   error: Error?,
@@ -196,11 +223,11 @@ open class Provider<EndPoint: EndPointType>: ProviderType {
                 completion(.failure(.unknown))
         }
     }
-
+    
     private func log(response: Response) {
         if EnvironmentVariables.verboseNetworkLogger.level != nil  {
             NetworkLogger.log(response: response)
         }
     }
-
+    
 }

@@ -8,14 +8,16 @@
 import Foundation
 
 public extension URLRequest {
-    mutating func encoded(encodable: Encodable, encoder: JSONEncoder = JSONEncoder()) throws -> URLRequest {
+    mutating func encoded(encodable: Encodable,
+                          encoder: JSONEncoder = JSONEncoder()) throws -> URLRequest {
         do {
             let encoding = Encoding(encodable: encodable)
             httpBody = try encoder.encode(encoding)
 
             let contentTypeHeaderName = "Content-Type"
             if value(forHTTPHeaderField: contentTypeHeaderName) == nil {
-                setValue("application/json", forHTTPHeaderField: contentTypeHeaderName)
+                setValue("application/json",
+                         forHTTPHeaderField: contentTypeHeaderName)
             }
 
             return self
@@ -28,7 +30,8 @@ public extension URLRequest {
         guard let url = url else { throw NetworkError.missingURL }
 
         if var urlComponents = URLComponents(url: url,
-                                             resolvingAgainstBaseURL: false), !urlParameters.isEmpty {
+                                             resolvingAgainstBaseURL: false),
+           !urlParameters.isEmpty {
 
             let queryItems = urlParameters.map { key, value -> URLQueryItem in
                 let valueString = String(describing: value)
@@ -40,7 +43,8 @@ public extension URLRequest {
 
         let contentTypeHeaderName = "Content-Type"
         if value(forHTTPHeaderField: contentTypeHeaderName) == nil {
-            setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: contentTypeHeaderName)
+            setValue("application/x-www-form-urlencoded; charset=utf-8",
+                     forHTTPHeaderField: contentTypeHeaderName)
         }
 
         return self
@@ -49,13 +53,15 @@ public extension URLRequest {
     mutating func encoded(bodyParameters: [String: Any]) throws -> URLRequest {
         guard !bodyParameters.isEmpty else { return self }
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: bodyParameters, options: .prettyPrinted)
+            let jsonData = try JSONSerialization.data(withJSONObject: bodyParameters,
+                                                      options: .prettyPrinted)
 
             httpBody = jsonData
 
             let contentTypeHeaderName = "Content-Type"
             if value(forHTTPHeaderField: contentTypeHeaderName) == nil {
-                setValue("application/json", forHTTPHeaderField: contentTypeHeaderName)
+                setValue("application/json",
+                         forHTTPHeaderField: contentTypeHeaderName)
             }
 
             return self
